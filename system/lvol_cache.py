@@ -26,6 +26,7 @@ module: lvol_cache
 short_description: Configure Cache LVM logical volumes
 description:
   - This module creates, removes or resizes, converts cache logical volumes.
+version_added: "2.1"
 options:
   vg:
     description:
@@ -80,63 +81,84 @@ options:
     - This value is used when type is cache, specifies which cache pool will
       be caching data for cache lvol. Must be in format vg/lv. Cache pool lvol
       and cache lvol must be from same vg (this is restriction of lvm2).
-  notes:
-    - Filesystems on top of the volume are not resized.
+notes:
+  - Filesystems on top of the volume are not resized.
 '''
 
 EXAMPLES = '''
-# Create a logical volume of 512m.
-- lvol: vg=firefly lv=test size=512m
-
-# Create a logical volume of 512g.
-- lvol: vg=firefly lv=test size=512g
-
-# Create a logical volume the size of all remaining space in the volume group
-- lvol: vg=firefly lv=test size=100%FREE
-
-# Create a logical volume with special options
-- lvol: vg=firefly lv=test size=512g opts="-r 16"
-
-# Extend the logical volume to 1024m.
-- lvol: vg=firefly lv=test size=1024m
-
-# Extend the logical volume to take all remaining space of the PVs
-- lvol: vg=firefly lv=test size=100%PVS
-
-# Resize the logical volume to % of VG
-- lvol: vg=firefly lv=test size=80%VG force=yes
-
-# Reduce the logical volume to 512m
-- lvol: vg=firefly lv=test size=512m force=yes
-
-# Remove the logical volume.
-- lvol: vg=firefly lv=test state=absent force=yes
-
 # Create cache pool logical volume of 512m.
-- lvol: vg=firefly lv=testpool size=512m type=cache-pool
+- lvol: vg=vgtest lv=testpool size=512m type=cache-pool
 
-# Create cache lvol testcached with cache pool firefly/testpool,
+# Create cache lvol testcached with cache pool vgtest/testpool,
 # cache pool must already exist
-- lvol: vg=firefly lv=testcached size=1g type=cache pool=firefly/testpool
+- lvol: vg=vgtest lv=testcached size=1g type=cache pool=vgtest/testpool
 
 # Extend cache pool to 2g, force must be yes
-- lvol: vg=firefly lv=testpool size=2g type=cache-pool force=yes
+- lvol: vg=vgtest lv=testpool size=2g type=cache-pool force=yes
 
 # Extend cache lvol to 5g, force must be yes
-- lvol: vg=firefly lv=testcached size=5g type=cache pool=firefly/testpool force=yes
+- lvol: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
 
 # Convert cache lvol to normal lvol
-- lvol: vg=firefly lv=testcached size=5g type=normal force=yes
+- lvol: vg=vgtest lv=testcached size=5g type=normal force=yes
 
 # Convert normal lvol to cache pool
-- lvol: vg=firefly lv=testcached size=5g type=cache-pool force=yes
+- lvol: vg=vgtest lv=testcached size=5g type=cache-pool force=yes
 
-# Convert cache pool lvol to cache lvol, you should notice that firefly/testpool
+# Convert cache pool lvol to cache lvol, you should notice that vgtest/testpool
 # still exists
-- lvol: vg=firefly lv=testcached size=5g type=cache pool=firefly/testpool force=yes
+- lvol: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
 
 # Remove cache pool lvol, this also changes cache lvol to normal
-- lvol: vg=firefly lv=testpool size=2g type=cache-pool state=absent force=yes
+- lvol: vg=vgtest lv=testpool size=2g type=cache-pool state=absent force=yes
+'''
+
+RETURN = '''
+pvs:
+    description: comma separated list of physical volumes
+    returned: when supported
+    type: string
+    sample: "/dev/sda,/dev/sdb"
+name:
+    description: name of logical volume
+    returned: when supported
+    type: string
+    sample: "lvtest"
+vg:
+    description: name of volume group of logical volume
+    returned: when supported
+    type: string
+    sample: "vgtest"
+state:
+    description: presence of logical volume
+    returned: when supported
+    type: string
+    sample: "absent"
+mode:
+    description: cache pool write mode
+    returned: when supported
+    type: string
+    sample: "writeback"
+type:
+    description: type of logical volume
+    returned: when supported
+    type: string
+    sample: "cache"
+opts:
+    description: free form options
+    returned: when supported
+    type: string
+    sample: "-i 4"
+size:
+    description: size of logical volume
+    returned: when supported
+    type: string
+    sample: "100M"
+pool:
+    description: cache pool for cached lvol
+    returned: when supported
+    type: string
+    sample: "vgtest/lvcache"
 '''
 
 import re
