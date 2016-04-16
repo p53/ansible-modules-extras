@@ -87,30 +87,30 @@ notes:
 
 EXAMPLES = '''
 # Create cache pool logical volume of 512m.
-- lvol: vg=vgtest lv=testpool size=512m type=cache-pool
+- lvol_cache: vg=vgtest lv=testpool size=512m type=cache-pool
 
 # Create cache lvol testcached with cache pool vgtest/testpool,
 # cache pool must already exist
-- lvol: vg=vgtest lv=testcached size=1g type=cache pool=vgtest/testpool
+- lvol_cache: vg=vgtest lv=testcached size=1g type=cache pool=vgtest/testpool
 
 # Extend cache pool to 2g, force must be yes
-- lvol: vg=vgtest lv=testpool size=2g type=cache-pool force=yes
+- lvol_cache: vg=vgtest lv=testpool size=2g type=cache-pool force=yes
 
 # Extend cache lvol to 5g, force must be yes
-- lvol: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
+- lvol_cache: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
 
 # Convert cache lvol to normal lvol
-- lvol: vg=vgtest lv=testcached size=5g type=normal force=yes
+- lvol_cache: vg=vgtest lv=testcached size=5g type=normal force=yes
 
 # Convert normal lvol to cache pool
-- lvol: vg=vgtest lv=testcached size=5g type=cache-pool force=yes
+- lvol_cache: vg=vgtest lv=testcached size=5g type=cache-pool force=yes
 
 # Convert cache pool lvol to cache lvol, you should notice that vgtest/testpool
 # still exists
-- lvol: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
+- lvol_cache: vg=vgtest lv=testcached size=5g type=cache pool=vgtest/testpool force=yes
 
 # Remove cache pool lvol, this also changes cache lvol to normal
-- lvol: vg=vgtest lv=testpool size=2g type=cache-pool state=absent force=yes
+- lvol_cache: vg=vgtest lv=testpool size=2g type=cache-pool state=absent force=yes
 '''
 
 RETURN = '''
