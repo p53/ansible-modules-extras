@@ -26,7 +26,7 @@ module: lvol_cache
 short_description: Configure Cache LVM logical volumes
 description:
   - This module creates, removes or resizes, converts cache logical volumes.
-version_added: "2.1"
+version_added: "2.2"
 options:
   vg:
     description:
